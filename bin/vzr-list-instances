@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+
+require File.expand_path(
+  File.join(
+    File.dirname(File.expand_path(
+      File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
+    )),
+    '../lib/vzruby'
+  )
+)
+
+
+@options = Hash.new
+
+def parse()
+	opts = OptionParser.new do |opts|
+		opts.banner "Usage: vzr-list-instances [OPTIONS]"
+		opts.separator "List instances powerwed by vzr"
+		opts.separator ""
+		opts.separator "Options:"
+		opts.separator ""
+		opts.on("-a", "--all") do |a|
+			@options[:all] = true
+		end
+		opts.on("-h", "--help", "This help screen") do
+			print opts
+		end
+	end 
+			
+end
+
+
+
+
+vzr = VZRuby::Client.new(ENV['VZR_SERVER'])
+instances = vzr.get_instances
+
+# Print out a heading and the instances
+puts "Instance ID\tIP\tStatus\tTemplate"
+instances.each do |inst|
+	puts << inst[:id] + "\t" + inst[:ip] + "\t" + inst[:status] + "\t" + inst[:ostemplate]
+end

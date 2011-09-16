@@ -1,0 +1,41 @@
+#!/usr/bin/env ruby
+require 'optparse'
+require File.expand_path(
+  File.join(
+    File.dirname(File.expand_path(
+      File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
+    )),
+    '../lib/mcc'
+  )
+)
+
+
+@options = Hash.new
+
+opts = OptionParser.new do |opts|
+	opts.banner = "Usage: mcc-list-images"
+	opts.separator "List MiniCloud images"
+	opts.separator ""
+	opts.separator "Options:"
+	opts.on("-h", "--help", "This help screen") do
+		print opts
+		exit 
+	end
+end 
+opts.parse!
+
+if ENV['MCC_SERVER'].nil?
+	puts "MCC_SERVER environment variable is not defined."
+	exit 1
+end
+
+
+mcc = MCC::Client.new(ENV['MCC_SERVER'])
+
+image = mcc.get_images
+
+
+# Print out a heading and the images
+image.each do |img|
+	puts "IMAGE \t" + img
+end

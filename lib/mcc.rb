@@ -1,6 +1,6 @@
-module VZRuby
+module MCC
 	# Source the client and server libs
-	libs = ["server/server", "client/client"]
+	libs = ["client", "server", "openvz", "keystore"]
 	libs.each do |lib|
 		require File.expand_path(
 			File.join(
@@ -8,9 +8,10 @@ module VZRuby
 					File.expand_path(
 						File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
 					)
-				), lib
+				), "mcc/"+lib
 			)
 		)
 	
 	end
 end
+

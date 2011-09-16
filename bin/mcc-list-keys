@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+require 'optparse'
+require File.expand_path(
+  File.join(
+    File.dirname(File.expand_path(
+      File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
+    )),
+    '../lib/mcc'
+  )
+)
+
+
+@options = Hash.new
+
+opts = OptionParser.new do |opts|
+	opts.banner = "Usage: mcc-list-keys"
+	opts.separator "List SSH keys stored in a MiniCloud keystore"
+	opts.separator ""
+	opts.separator "Options:"
+	opts.on("-h", "--help", "This help screen") do
+		print opts
+		exit 
+	end
+end 
+
+begin
+	opts.parse!
+rescue OptionParser::InvalidOption, OptionParser::MissingArgument 
+	puts $!.to_s
+	puts ""
+	puts opts
+	exit 1
+end
+
+
+key = MCC::Keystore.new.get_keys
+
+# Print out a heading and the images
+
+key.each do |k|
+	puts "KEY\t" + k
+end

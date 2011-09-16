@@ -1,0 +1,57 @@
+#!/usr/bin/env ruby
+require 'optparse'
+require File.expand_path(
+  File.join(
+    File.dirname(File.expand_path(
+      File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
+    )),
+    '../lib/mcc'
+  )
+)
+
+@options = Hash.new
+opts = OptionParser.new do |opts|
+	opts.banner = "Usage: mcc-destroy-instance -i INSTANCE"
+	opts.separator "Destroy a mcc instance"
+	opts.separator ""
+	opts.separator "Options:"
+	opts.separator ""
+	opts.on("-i", "--instance ID", "The instance ID") do |a|
+		@options[:id] = a
+	end
+	opts.on("-h", "--help", "This help screen") do
+		print opts
+		exit
+	end
+	opts.separator ""
+	opts.separator "Example:"
+	opts.separator ""
+	opts.separator "$ mcc-destroy-instance -i 500"
+end 
+
+
+# Parse and check the required arguments
+begin
+	opts.parse!
+	raise OptionParser::MissingArgument if @options[:id].nil?
+rescue OptionParser::InvalidOption, OptionParser::MissingArgument 
+	puts $!.to_s
+	puts ""
+	puts opts
+	exit 1
+end
+
+if ENV['MCC_SERVER'].nil?
+	puts "MCC_SERVER environment variable is not defined."
+	exit 1
+end
+
+begin
+	mcc = MCC::Client.new(ENV['MCC_SERVER']).destroy_instance(@options[:id])
+rescue XMLRPC::FaultException # Can't get the exact exception, probably an invalid ID
+	puts "Instance ID " + @options[:id] + " not found"
+end
+
+
+
+

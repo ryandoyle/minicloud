@@ -1,0 +1,46 @@
+#!/usr/bin/env ruby
+require 'optparse'
+require File.expand_path(
+  File.join(
+    File.dirname(File.expand_path(
+      File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
+    )),
+    '../lib/mcc'
+  )
+)
+
+@options = Hash.new
+opts = OptionParser.new do |opts|
+	opts.banner = "Usage: mcc-add-key -n NAME -p PUBKEY"
+	opts.separator "Add a public SSH key to the minicloud keystore"
+	opts.separator ""
+	opts.separator "Options:"
+	opts.on("-n", "--name KEYNAME", "Name assigned to the public key") do |k|
+		@options[:keyname] = k
+	end
+	opts.on("-p", "--public-key PUBKEY", "The full public key string") do |k|
+		@options[:pub] = k
+	end
+	opts.on("-h", "--help", "This help screen") do
+		print opts
+		exit 
+	end
+	opts.separator ""
+	opts.separator "Example:"
+	opts.separator ""
+	opts.separator "$ mcc-add-key --name my-key --public-key \"ssh-rsa AAAAB3NzaC1yc2.....aQ== me@exmaple.com\""
+end 
+
+# Parse and check the required arguments
+begin
+	opts.parse!
+	raise OptionParser::MissingArgument if @options[:keyname].nil?
+	raise OptionParser::MissingArgument if @options[:pub].nil?
+rescue OptionParser::InvalidOption, OptionParser::MissingArgument
+	puts $!.to_s
+	puts ""
+	puts opts
+	exit 1
+end
+
+key = MCC::Keystore.new.add_key(@options[:keyname], @options[:pub])

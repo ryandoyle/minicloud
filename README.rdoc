@@ -1,0 +1,129 @@
+MiniCloud is a cloud-computing toolkit built on OpenVZ
+* Installation is simple and operational tasks are to the point
+* It's perfect for rapid testing and development requiring disposable compute resources
+* There is no central database (or any database)
+
+== Overview
+MiniCloud is a set of client/server programs to drive the container-based virtualisation platform, OpenVZ.
+It allows you to manage instances with a simple set of command line tools.
+
+MiniCloud was built out of a frustration surrounding existing open source cloud management solutions. 
+It aims to be simple while being flexible enough to fit into an organisations existing infrastructure.
+
+== Installing the server
+Install and setup OpenVZ: http://wiki.openvz.org/Quick_installation. MiniCloud
+expects OpenVZ to be operational and able to run containers. Currently MiniClould server
+must be run as root.
+
+Clone the MiniCloud repo to install.
+	$ sudo su -
+	$ cd /opt
+	$ git clone https://github.com/ryandoyle/minicloud.git
+	
+Run the MiniClould server, specifying a range of IP addresses that it can hand out
+	$ /opt/minicloud/sbin/mccserver -r 10.0.0.100-10.0.0.200
+	
+Check the log files
+	$ tail -f /opt/minicloud/log/mcc-server.log
+	
+== Installing the client tools
+The client tools are also part of the MiniCloud repo. They are all located under bin/
+
+Clone the MiniCloud repo.
+	$ cd ~/
+	$ mkdir .minicloud
+	$ git clone https://github.com/ryandoyle/minicloud.git .minicloud/
+	$ export PATH=$PATH:~/.minicloud/bin
+	
+== Create an instance
+Once we've setup the server and client tools, we can create an instance
+
+Fist export the MCC_SERVER environment variable. It is the hostname and port of the 
+MiniCloud server.
+	$ export MCC_SERVER=myopenvzserver:8080
+	
+List the images we are able to select
+	$ mcc-list-images 
+		IMAGE 	centos-5-x86_64
+		IMAGE 	centos-5-x86
+		IMAGE 	fedora-14-x86_64
+		IMAGE 	gentoo-10.0-x86_64
+		IMAGE 	ubuntu-10.04-x86_64
+
+List the instance types we can select
+	$ mcc-list-instance-types 
+		INST_TYPE	basic
+		INST_TYPE	light
+		INST_TYPE	unlimited
+		INST_TYPE	vswap-1024m
+		INST_TYPE	vswap-256m
+		INST_TYPE	vswap-512m
+		
+List the keys we have associated with MiniCloud
+	$ mcc-list-keys
+	
+Humm, nothing. We need to register one
+	$ mcc-add-key --name my-key --public-key "ssh-rsa AAAAB3NzaC1yc2.....aQ== mykey"
+
+Now let's launch an instance!
+	$ mcc-run-instances -i centos-5-x86_64 -t basic -k doylenet
+				ID	IP
+		INST	501	10.0.0.110
+		
+We will get back the ID of the instance and the IP address to connect to. Let's see the 
+progress using mcc-list-instances
+	$ mcc-list-instances 
+					ID	IP		STATUS		TEMPLATE
+		INSTANCE	501	10.0.0.110	running		centos-5-x86_64
+		
+It's up! At the moment the instance won't appear until it is up and running. 
+It may take a few seconds for the instance to appear. It will not be present in the list 
+until it is up and running.
+
+== Destroy an instance
+It's easy - use mcc-destroy-instace
+
+First check the running instances
+	$ mcc-list-instances
+				ID	IP
+		INST	501	10.0.0.110
+
+Kill off any you don't want
+	$ mcc-destroy-instance -i 501
+	
+It could take a while for MiniCloud to kill off the instance. Use mcc-list-instances to check the status
+	$ mcc-list-instances
+	
+== Notes
+* The server needs to be run as root
+* Calls between the client and server are XML-RPC over HTTP without authentication
+
+== Todo
+* Client-side libraries to do what the CLI tools do
+* Rspec tests and mocking RPC calls
+* RPM and DEB packages for installation of the server, client tools and libraries
+* Running the server as a user other than root
+* Look at better RPC methods
+* Replace the vz* binary programs with Ruby equivalents
+
+
+== Copyright
+
+
+Copyright (c) 2011 {Ryan Doyle}[http://ryandoyle.net]
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+

@@ -63,7 +63,7 @@ List the keys we have associated with MiniCloud
   $ mcc-list-keys
 	
 Humm, nothing. We need to register one
-  $ mcc-add-key --name my-key --public-key "ssh-rsa AAAAB3NzaC1yc2.....aQ== mykey"
+  $ mcc-add-key --name doylenet --public-key "ssh-rsa AAAAB3NzaC1yc2.....aQ== mykey"
 
 Now let's launch an instance!
   $ mcc-run-instances -i centos-5-x86_64 -t basic -k doylenet

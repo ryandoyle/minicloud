@@ -16,65 +16,65 @@ expects OpenVZ to be operational and able to run containers. Currently MiniCloul
 must be run as root.
 
 Clone the MiniCloud repo to install.
-	$ sudo su -
-	$ cd /opt
-	$ git clone https://github.com/ryandoyle/minicloud.git
+  $ sudo su -
+  $ cd /opt
+  $ git clone https://github.com/ryandoyle/minicloud.git
 	
 Run the MiniClould server, specifying a range of IP addresses that it can hand out
-	$ /opt/minicloud/sbin/mccserver -r 10.0.0.100-10.0.0.200
+  $ /opt/minicloud/sbin/mccserver -r 10.0.0.100-10.0.0.200
 	
 Check the log files
-	$ tail -f /opt/minicloud/log/mcc-server.log
+  $ tail -f /opt/minicloud/log/mcc-server.log
 	
 == Installing the client tools
 The client tools are also part of the MiniCloud repo. They are all located under bin/
 
 Clone the MiniCloud repo.
-	$ cd ~/
-	$ mkdir .minicloud
-	$ git clone https://github.com/ryandoyle/minicloud.git .minicloud/
-	$ export PATH=$PATH:~/.minicloud/bin
+  $ cd ~/
+  $ mkdir .minicloud
+  $ git clone https://github.com/ryandoyle/minicloud.git .minicloud/
+  $ export PATH=$PATH:~/.minicloud/bin
 	
 == Create an instance
 Once we've setup the server and client tools, we can create an instance
 
 Fist export the MCC_SERVER environment variable. It is the hostname and port of the 
 MiniCloud server.
-	$ export MCC_SERVER=myopenvzserver:8080
+  $ export MCC_SERVER=myopenvzserver:8080
 	
 List the images we are able to select
-	$ mcc-list-images 
-		IMAGE 	centos-5-x86_64
-		IMAGE 	centos-5-x86
-		IMAGE 	fedora-14-x86_64
-		IMAGE 	gentoo-10.0-x86_64
-		IMAGE 	ubuntu-10.04-x86_64
+  $ mcc-list-images 
+      IMAGE   centos-5-x86_64
+      IMAGE   centos-5-x86
+      IMAGE   fedora-14-x86_64
+      IMAGE   gentoo-10.0-x86_64
+      IMAGE   ubuntu-10.04-x86_64
 
 List the instance types we can select
-	$ mcc-list-instance-types 
-		INST_TYPE	basic
-		INST_TYPE	light
-		INST_TYPE	unlimited
-		INST_TYPE	vswap-1024m
-		INST_TYPE	vswap-256m
-		INST_TYPE	vswap-512m
+  $ mcc-list-instance-types 
+      INST_TYPE	  basic
+      INST_TYPE	  light
+      INST_TYPE	  unlimited
+      INST_TYPE	  vswap-1024m
+      INST_TYPE	  vswap-256m
+      INST_TYPE	  vswap-512m
 		
 List the keys we have associated with MiniCloud
-	$ mcc-list-keys
+  $ mcc-list-keys
 	
 Humm, nothing. We need to register one
-	$ mcc-add-key --name my-key --public-key "ssh-rsa AAAAB3NzaC1yc2.....aQ== mykey"
+  $ mcc-add-key --name my-key --public-key "ssh-rsa AAAAB3NzaC1yc2.....aQ== mykey"
 
 Now let's launch an instance!
-	$ mcc-run-instances -i centos-5-x86_64 -t basic -k doylenet
-				ID	IP
-		INST	501	10.0.0.110
+  $ mcc-run-instances -i centos-5-x86_64 -t basic -k doylenet
+            ID   IP
+      INST  501  10.0.0.110
 		
 We will get back the ID of the instance and the IP address to connect to. Let's see the 
 progress using mcc-list-instances
-	$ mcc-list-instances 
-					ID	IP		STATUS		TEMPLATE
-		INSTANCE	501	10.0.0.110	running		centos-5-x86_64
+  $ mcc-list-instances 
+               ID   IP          STATUS   TEMPLATE
+      INSTANCE 501  10.0.0.110  running  centos-5-x86_64
 		
 It's up! At the moment the instance won't appear until it is up and running. 
 It may take a few seconds for the instance to appear. It will not be present in the list 
@@ -84,15 +84,15 @@ until it is up and running.
 It's easy - use mcc-destroy-instace
 
 First check the running instances
-	$ mcc-list-instances
-				ID	IP
-		INST	501	10.0.0.110
+  $ mcc-list-instances
+            ID   IP
+      INST  501  10.0.0.110
 
 Kill off any you don't want
-	$ mcc-destroy-instance -i 501
+  $ mcc-destroy-instance -i 501
 	
 It could take a while for MiniCloud to kill off the instance. Use mcc-list-instances to check the status
-	$ mcc-list-instances
+  $ mcc-list-instances
 	
 == Notes
 * The server needs to be run as root

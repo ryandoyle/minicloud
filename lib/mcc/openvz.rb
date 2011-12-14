@@ -21,13 +21,13 @@ module MCC
 			ret_arr = Array.new
 			if params['instance']
 				@log.debug "get_instances() Specific instance #{params['instance']} requested."
-				res = `vzlist -H -o ctid,ip,status,ostemplate #{params['instance']}`
+				res = `vzlist -H -o ctid,ip,status,ostemplate,name #{params['instance']}`
 			elsif params['all']
 				@log.debug "get_instances() All running _and_ stopped instances requested"
-				res = `vzlist -a -H -o ctid,ip,status,ostemplate`
+				res = `vzlist -a -H -o ctid,ip,status,ostemplate,name`
 			else
 				@log.debug "get_instances() All running instances requested"
-				res = `vzlist -H -o ctid,ip,status,ostemplate`
+				res = `vzlist -H -o ctid,ip,status,ostemplate,name`
 			end
 			# Process each line of the output
 			res.each_line do |line|
@@ -35,8 +35,8 @@ module MCC
 				line.lstrip!
 				e = line.split(' ')
 				# Push each instance on the array we'll return
-				@log.debug "get_instances() Found instance ctid:" + e[0] + " ip:" + e[1] + " status:" + e[2] + " ostemplate:" + e[3]
-				ret_arr.push({:id => e[0], :ip => e[1], :status => e[2],:ostemplate => e[3]})
+				@log.debug "get_instances() Found instance ctid:" + e[0] + " ip:" + e[1] + " status:" + e[2] + " ostemplate:" + e[3] + " name:" + e[4]
+				ret_arr.push({:id => e[0], :ip => e[1], :status => e[2],:ostemplate => e[3],:name => e[4]})
 			end
 			return ret_arr
 		end

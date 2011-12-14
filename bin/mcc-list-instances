@@ -57,13 +57,13 @@ else
 end
 
 # Print out a heading and the instances
-puts "\t\tID\tIP\t\tSTATUS\t\tTEMPLATE"
+puts "\t\tID\tIP\t\tSTATUS\t\tTEMPLATE\t\tNAME"
 instances.each do |inst|
 	# Fix the formatting for stopped instances
 	if inst['ip'].eql?('-')
-		puts "INSTANCE\t" + inst['id'] + "\t" + inst['ip'] + "\t\t" + inst['status'] + "\t\t" + inst['ostemplate']
+		puts "INSTANCE\t" + inst['id'] + "\t" + inst['ip'] + "\t\t" + inst['status'] + "\t\t" + inst['ostemplate'] + "\t\t" + inst['name']
 	else
-		puts "INSTANCE\t" + inst['id'] + "\t" + inst['ip'] + "\t" + inst['status'] + "\t\t" + inst['ostemplate']
+		puts "INSTANCE\t" + inst['id'] + "\t" + inst['ip'] + "\t" + inst['status'] + "\t\t" + inst['ostemplate'] + "\t\t" + inst['name']
 	end
 end
 

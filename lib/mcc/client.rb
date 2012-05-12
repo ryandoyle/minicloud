@@ -27,8 +27,8 @@ module MCC
 			return res
 		end
 		
-		def run_instance(template, type, pubkey)
-			res = @rpc.call("openvz.run_instance", template, type, pubkey)
+		def run_instance(template, type, pubkey, name)
+			res = @rpc.call("openvz.run_instance", template, type, pubkey, name)
 			return res
 		end
 		

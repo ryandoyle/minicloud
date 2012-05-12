@@ -57,7 +57,7 @@ else
 end
 
 # Print out a heading and the instances
-puts "\t\tID\tIP\t\tSTATUS\t\tTEMPLATE\t\tNAME"
+puts "\t\tID\tIP\t\tSTATUS\t\tTEMPLATE\t\t\tNAME"
 instances.each do |inst|
 	# Fix the formatting for stopped instances
 	if inst['ip'].eql?('-')

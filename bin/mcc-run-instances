@@ -13,7 +13,7 @@ require File.expand_path(
 @options = Hash.new
 
 opts = OptionParser.new do |opts|
-	opts.banner = "Usage: mcc-run-instance -i IMAGE -t TYPE -k KEY"
+	opts.banner = "Usage: mcc-run-instance -i IMAGE -t TYPE -k KEY [-n NAME]"
 	opts.separator "Run a MiniCloud instance"
 	opts.separator ""
 	opts.separator "Options:"
@@ -27,6 +27,9 @@ opts = OptionParser.new do |opts|
 	opts.on("-k", "--public-key KEY", "Use the SSH public key as found in mcc-list-keys") do |a|
 		@options[:pubkey] = a
 	end
+	opts.on("-n", "--name NAME", "Name to identify instance by") do |a|
+		@options[:name] = a
+	end
 	opts.on("-h", "--help", "This help screen") do
 		print opts
 		exit
@@ -34,7 +37,7 @@ opts = OptionParser.new do |opts|
 	opts.separator ""
 	opts.separator "Example:"
 	opts.separator ""
-	opts.separator "$ mcc-run-instance -i centos-5-x86_64 -t basic -k my-key"
+	opts.separator "$ mcc-run-instance -i centos-5-x86_64 -t basic -k my-key -n webserver1"
 end 
 
 
@@ -43,6 +46,7 @@ begin
 	raise OptionParser::MissingArgument if @options[:template].nil?
 	raise OptionParser::MissingArgument if @options[:type].nil?
 	raise OptionParser::MissingArgument if @options[:pubkey].nil?
+    @options[:name] = '' if @options[:name].nil?
 rescue OptionParser::InvalidOption, OptionParser::MissingArgument 
 	puts $!.to_s
 	puts ""
@@ -66,7 +70,7 @@ rescue Errno::ENOENT
 	exit 1
 end
 
-ret = mcc.run_instance(@options[:template], @options[:type], key)
+ret = mcc.run_instance(@options[:template], @options[:type], key, @options[:name])
 
 puts "\t\tID\tIP"
 puts "INST\t" + ret['id'].to_s + "\t" + ret['ip']

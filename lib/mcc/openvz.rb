@@ -77,7 +77,7 @@ module MCC
 			return ret_arr
 		end
 		
-		def run_instance(template, type = 'basic', pubkey = '')
+		def run_instance(template, type = 'basic', pubkey = '', name = '')
 			# Check if the template type exist first
 			if not get_instance_types.include?(type)
 				@log.err "run_instance() Instance type " + type + " not found"
@@ -104,8 +104,8 @@ module MCC
 			@log.debug "run_instance() Threading creation"
 			
 			t1 = Thread.new do
-				@log.debug "run_instance(thread) Running: vzctl create #{ctid} --ostemplate #{template} --config #{type} --ipadd #{ip} --hostname mcc-id-#{ctid}.localdomain"
-				create = `vzctl create #{ctid} --ostemplate #{template} --config #{type} --ipadd #{ip} --hostname mcc-id-#{ctid}.localdomain`
+				@log.debug "run_instance(thread) Running: vzctl create #{ctid} --ostemplate #{template} --config #{type} --ipadd #{ip} --hostname mcc-id-#{ctid}.localdomain --name \"#{name}\""
+				create = `vzctl create #{ctid} --ostemplate #{template} --config #{type} --ipadd #{ip} --hostname mcc-id-#{ctid}.localdomain --name "#{name}"`
 				@log.debug "run_instance(thread) Running: vzctl start #{ctid}"
 				start = `vzctl start #{ctid}`
 				# Inject the key

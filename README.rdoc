@@ -66,19 +66,19 @@ Humm, nothing. We need to register one
   $ mcc-add-key --name doylenet --public-key "ssh-rsa AAAAB3NzaC1yc2.....aQ== mykey"
 
 Now let's launch an instance!
-  $ mcc-run-instances -i centos-5-x86_64 -t basic -k doylenet
+  $ mcc-run-instances -i centos-5-x86_64 -t basic -k doylenet -n my-web-server
             ID   IP
       INST  501  10.0.0.110
 		
 We will get back the ID of the instance and the IP address to connect to. Let's see the 
 progress using mcc-list-instances
   $ mcc-list-instances 
-               ID   IP          STATUS   TEMPLATE
-      INSTANCE 501  10.0.0.110  running  centos-5-x86_64
+               ID   IP          STATUS   TEMPLATE              NAME
+      INSTANCE 501  10.0.0.110  running  centos-5-x86_64       my-web-server
 		
 It's up! At the moment the instance won't appear until it is up and running. 
 It may take a few seconds for the instance to appear. It will not be present in the list 
-until it is up and running.
+until it is up and running!
 
 == Destroy an instance
 It's easy - use mcc-destroy-instace

@@ -13,28 +13,23 @@ module MCC
     end
     
     def get_instances(opts = {})
-      res = @rpc.call("openvz.get_instances", opts)
-      return res
+      @rpc.call("openvz.get_instances", opts)
     end
     
     def get_images()
-      res = @rpc.call("openvz.get_images")
-      return res
+      @rpc.call("openvz.get_images")
     end
     
     def get_instance_types()
-      res = @rpc.call("openvz.get_instance_types")
-      return res
+      @rpc.call("openvz.get_instance_types")
     end
     
     def run_instance(template, type, pubkey, name)
-      res = @rpc.call("openvz.run_instance", template, type, pubkey, name)
-      return res
+      @rpc.call("openvz.run_instance", template, type, pubkey, name)
     end
     
     def destroy_instance(id)
-      res = @rpc.call("openvz.destroy_instance", id)
-      return res
+      @rpc.call("openvz.destroy_instance", id)
     end  
   end
 end

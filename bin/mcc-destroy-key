@@ -13,42 +13,42 @@ require File.expand_path(
 @options = Hash.new
 
 opts = OptionParser.new do |opts|
-	opts.banner = "Usage: mcc-destroy-key -n KEYNAME"
-	opts.separator "Removes an SSH key stored in a MiniCloud keystore"
-	opts.separator ""
-	opts.separator "Options:"
-	opts.on("-n", "--name KEYNAME", "Name of the public key") do |k|
-		@options[:keyname] = k
-	end
-	opts.on("-h", "--help", "This help screen") do
-		print opts
-		exit 
-	end
-	opts.separator ""
-	opts.separator "Example:"
-	opts.separator ""
-	opts.separator "$ mcc-destroy-key -n my-key"
-	opts.separator ""
-	opts.separator "Notes:"
-	opts.separator ""
-	opts.separator "- This does not alter any keys in ~/.ssh. MiniCloud stores it's own copy of"
-	opts.separator "  keys in ~/.mcc/keys. Destroying keys will only alter ~/.mcc/keys"
+  opts.banner = "Usage: mcc-destroy-key -n KEYNAME"
+  opts.separator "Removes an SSH key stored in a MiniCloud keystore"
+  opts.separator ""
+  opts.separator "Options:"
+  opts.on("-n", "--name KEYNAME", "Name of the public key") do |k|
+    @options[:keyname] = k
+  end
+  opts.on("-h", "--help", "This help screen") do
+    print opts
+    exit 
+  end
+  opts.separator ""
+  opts.separator "Example:"
+  opts.separator ""
+  opts.separator "$ mcc-destroy-key -n my-key"
+  opts.separator ""
+  opts.separator "Notes:"
+  opts.separator ""
+  opts.separator "- This does not alter any keys in ~/.ssh. MiniCloud stores it's own copy of"
+  opts.separator "  keys in ~/.mcc/keys. Destroying keys will only alter ~/.mcc/keys"
 end 
 
 # Parse and check the required arguments
 begin
-	opts.parse!
-	raise OptionParser::MissingArgument if @options[:keyname].nil?
+  opts.parse!
+  raise OptionParser::MissingArgument if @options[:keyname].nil?
 rescue OptionParser::InvalidOption, OptionParser::MissingArgument 
-	puts $!.to_s
-	puts ""
-	puts opts
-	exit 1
+  puts $!.to_s
+  puts ""
+  puts opts
+  exit 1
 end
 
 begin
-	key = MCC::Keystore.new.del_key(@options[:keyname])
+  key = MCC::Keystore.new.del_key(@options[:keyname])
 rescue => e
-	puts e.message
+  puts e.message
 end
-	
+  

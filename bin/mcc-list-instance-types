@@ -13,28 +13,28 @@ require File.expand_path(
 @options = Hash.new
 
 opts = OptionParser.new do |opts|
-	opts.banner = "Usage: mcc-list-instance-types"
-	opts.separator "List MiniCloud instance types"
-	opts.separator ""
-	opts.separator "Options:"
-	opts.on("-h", "--help", "This help screen") do
-		print opts
-		exit
-	end
+  opts.banner = "Usage: mcc-list-instance-types"
+  opts.separator "List MiniCloud instance types"
+  opts.separator ""
+  opts.separator "Options:"
+  opts.on("-h", "--help", "This help screen") do
+    print opts
+    exit
+  end
 end 
 
 begin
-	opts.parse!
+  opts.parse!
 rescue OptionParser::InvalidOption, OptionParser::MissingArgument 
-	puts $!.to_s
-	puts ""
-	puts opts
-	exit 1
+  puts $!.to_s
+  puts ""
+  puts opts
+  exit 1
 end
 
 if ENV['MCC_SERVER'].nil?
-	puts "MCC_SERVER environment variable is not defined."
-	exit 1
+  puts "MCC_SERVER environment variable is not defined."
+  exit 1
 end
 
 
@@ -44,5 +44,5 @@ types = mcc.get_instance_types
 
 # Print out a heading and the images
 types.each do |type|
-	puts "INST_TYPE\t" + type
+  puts "INST_TYPE\t" + type
 end

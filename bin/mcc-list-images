@@ -13,20 +13,20 @@ require File.expand_path(
 @options = Hash.new
 
 opts = OptionParser.new do |opts|
-	opts.banner = "Usage: mcc-list-images"
-	opts.separator "List MiniCloud images"
-	opts.separator ""
-	opts.separator "Options:"
-	opts.on("-h", "--help", "This help screen") do
-		print opts
-		exit 
-	end
+  opts.banner = "Usage: mcc-list-images"
+  opts.separator "List MiniCloud images"
+  opts.separator ""
+  opts.separator "Options:"
+  opts.on("-h", "--help", "This help screen") do
+    print opts
+    exit 
+  end
 end 
 opts.parse!
 
 if ENV['MCC_SERVER'].nil?
-	puts "MCC_SERVER environment variable is not defined."
-	exit 1
+  puts "MCC_SERVER environment variable is not defined."
+  exit 1
 end
 
 
@@ -37,5 +37,5 @@ image = mcc.get_images
 
 # Print out a heading and the images
 image.each do |img|
-	puts "IMAGE \t" + img
+  puts "IMAGE \t" + img
 end

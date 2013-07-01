@@ -12,60 +12,60 @@ require File.expand_path(
 # Set the defaults
 @options = {:port => 8080, :listen => '0.0.0.0', :iprange => '192.168.1.1-192.168.1.254', :daemon => true}
 opts = OptionParser.new do |opts|
-	opts.banner = "Usage: mccserver [OPTIONS]"
-	opts.separator "XML-RPC server for mcc-* client tools"
-	opts.separator ""
-	opts.separator "Options:"
-	opts.on("-p", "--port PORT", "Listen on port. Defaults to 8080") do |a|
-		@options[:port] = a
-	end
-	opts.on("-l", "--listen ADDRESS", "Bind to address. Defaults to 0.0.0.0") do |a|
-		@options[:listen] = a
-	end
-	opts.on("-r", "--iprange RANGE", "IP address range that will be allocated. Defaults to 192.168.1.10-192.168.1.100") do |a|
-		@options[:iprange] = a
-	end
-	opts.on("-f", "--foreground", "Run in the foreground. Defaults to daemon mode") do 
-		@options[:daemon] = false
-	end
-	opts.on("-h", "--help", "This help screen") do
-		print opts
-		exit
-	end
-	opts.separator ""
-	opts.separator "Example:"
-	opts.separator ""
-	opts.separator "$ sudo mccserver --port 80 --iprange 10.0.0.20-10.0.0.50"
-	opts.separator ""
-	opts.separator "- Listen on port 80 and automatically allocate the IP range 10.0.0.20-10.0.0.50"
+  opts.banner = "Usage: mccserver [OPTIONS]"
+  opts.separator "XML-RPC server for mcc-* client tools"
+  opts.separator ""
+  opts.separator "Options:"
+  opts.on("-p", "--port PORT", "Listen on port. Defaults to 8080") do |a|
+    @options[:port] = a
+  end
+  opts.on("-l", "--listen ADDRESS", "Bind to address. Defaults to 0.0.0.0") do |a|
+    @options[:listen] = a
+  end
+  opts.on("-r", "--iprange RANGE", "IP address range that will be allocated. Defaults to 192.168.1.10-192.168.1.100") do |a|
+    @options[:iprange] = a
+  end
+  opts.on("-f", "--foreground", "Run in the foreground. Defaults to daemon mode") do 
+    @options[:daemon] = false
+  end
+  opts.on("-h", "--help", "This help screen") do
+    print opts
+    exit
+  end
+  opts.separator ""
+  opts.separator "Example:"
+  opts.separator ""
+  opts.separator "$ sudo mccserver --port 80 --iprange 10.0.0.20-10.0.0.50"
+  opts.separator ""
+  opts.separator "- Listen on port 80 and automatically allocate the IP range 10.0.0.20-10.0.0.50"
 end 
 
 begin
-	opts.parse!
+  opts.parse!
 rescue OptionParser::InvalidOption, OptionParser::MissingArgument 
-	puts $!.to_s
-	puts ""
-	puts opts
-	exit 1
+  puts $!.to_s
+  puts ""
+  puts opts
+  exit 1
 end
 
 # Fork if we are in daemon mode
 if @options[:daemon]
-	# If we are in daemon mode, use a log file
-	logfile = File.expand_path(
-	  File.join(
-		File.dirname(File.expand_path(
-		  File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
-		)),
-		'../log/mcc-server.log'
-	  )
-	)		
-	Process.fork {
-		mcc = MCC::Server.new(@options[:port], @options[:listen], @options[:iprange], logfile)
-		mcc.run
-	}
+  # If we are in daemon mode, use a log file
+  logfile = File.expand_path(
+    File.join(
+    File.dirname(File.expand_path(
+      File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
+    )),
+    '../log/mcc-server.log'
+    )
+  )    
+  Process.fork {
+    mcc = MCC::Server.new(@options[:port], @options[:listen], @options[:iprange], logfile)
+    mcc.run
+  }
 # Run in the foreground
 else
-	mcc = MCC::Server.new(@options[:port], @options[:listen], @options[:iprange], STDOUT)
-	mcc.run
+  mcc = MCC::Server.new(@options[:port], @options[:listen], @options[:iprange], STDOUT)
+  mcc.run
 end

@@ -13,61 +13,61 @@ require File.expand_path(
 @options = Hash.new
 
 opts = OptionParser.new do |opts|
-	opts.banner = "Usage: mcc-run-instance -i IMAGE -t TYPE -k KEY [-n NAME]"
-	opts.separator "Run a MiniCloud instance"
-	opts.separator ""
-	opts.separator "Options:"
-	opts.separator ""
-	opts.on("-i", "--image IMAGE", "Use the image template found in mcc-list-images") do |a|
-		@options[:template] = a
-	end
-	opts.on("-t", "--instance-type TYPE", "Use the instance type as found in mcc-list-instance-types") do |a|
-		@options[:type] = a
-	end
-	opts.on("-k", "--public-key KEY", "Use the SSH public key as found in mcc-list-keys") do |a|
-		@options[:pubkey] = a
-	end
-	opts.on("-n", "--name NAME", "Name to identify instance by") do |a|
-		@options[:name] = a
-	end
-	opts.on("-h", "--help", "This help screen") do
-		print opts
-		exit
-	end
-	opts.separator ""
-	opts.separator "Example:"
-	opts.separator ""
-	opts.separator "$ mcc-run-instance -i centos-5-x86_64 -t basic -k my-key -n webserver1"
+  opts.banner = "Usage: mcc-run-instance -i IMAGE -t TYPE -k KEY [-n NAME]"
+  opts.separator "Run a MiniCloud instance"
+  opts.separator ""
+  opts.separator "Options:"
+  opts.separator ""
+  opts.on("-i", "--image IMAGE", "Use the image template found in mcc-list-images") do |a|
+    @options[:template] = a
+  end
+  opts.on("-t", "--instance-type TYPE", "Use the instance type as found in mcc-list-instance-types") do |a|
+    @options[:type] = a
+  end
+  opts.on("-k", "--public-key KEY", "Use the SSH public key as found in mcc-list-keys") do |a|
+    @options[:pubkey] = a
+  end
+  opts.on("-n", "--name NAME", "Name to identify instance by") do |a|
+    @options[:name] = a
+  end
+  opts.on("-h", "--help", "This help screen") do
+    print opts
+    exit
+  end
+  opts.separator ""
+  opts.separator "Example:"
+  opts.separator ""
+  opts.separator "$ mcc-run-instance -i centos-5-x86_64 -t basic -k my-key -n webserver1"
 end 
 
 
 begin
-	opts.parse!
-	raise OptionParser::MissingArgument if @options[:template].nil?
-	raise OptionParser::MissingArgument if @options[:type].nil?
-	raise OptionParser::MissingArgument if @options[:pubkey].nil?
+  opts.parse!
+  raise OptionParser::MissingArgument if @options[:template].nil?
+  raise OptionParser::MissingArgument if @options[:type].nil?
+  raise OptionParser::MissingArgument if @options[:pubkey].nil?
     @options[:name] = '' if @options[:name].nil?
 rescue OptionParser::InvalidOption, OptionParser::MissingArgument 
-	puts $!.to_s
-	puts ""
-	puts opts
-	exit 1
+  puts $!.to_s
+  puts ""
+  puts opts
+  exit 1
 end
 
 
 
 if ENV['MCC_SERVER'].nil?
-	puts "MCC_SERVER environment variable is not defined."
-	exit 1
+  puts "MCC_SERVER environment variable is not defined."
+  exit 1
 end
 
 
 mcc = MCC::Client.new(ENV['MCC_SERVER'])
 begin 
-	key = MCC::Keystore.new.get_pub_key(@options[:pubkey])
+  key = MCC::Keystore.new.get_pub_key(@options[:pubkey])
 rescue Errno::ENOENT
-	puts "Could not find key " + @options[:pubkey]
-	exit 1
+  puts "Could not find key " + @options[:pubkey]
+  exit 1
 end
 
 ret = mcc.run_instance(@options[:template], @options[:type], key, @options[:name])

@@ -13,35 +13,35 @@ require File.expand_path(
 @options = Hash.new
 
 opts = OptionParser.new do |opts|
-	opts.banner = "Usage: mcc-list-instances [OPTIONS]"
-	opts.separator "List MiniCloud instances"
-	opts.separator ""
-	opts.separator "Options:"
-	opts.separator ""
-	opts.on("-a", "--all", "Shows running and stopped instances") do 
-		@options[:all] = true
-	end
-	opts.on("-i", "--instance ID", "Only show a specific instance ID") do |a|
-		@options[:instance] = a
-	end
-	opts.on("-h", "--help", "This help screen") do
-		print opts
-		exit
-	end
+  opts.banner = "Usage: mcc-list-instances [OPTIONS]"
+  opts.separator "List MiniCloud instances"
+  opts.separator ""
+  opts.separator "Options:"
+  opts.separator ""
+  opts.on("-a", "--all", "Shows running and stopped instances") do 
+    @options[:all] = true
+  end
+  opts.on("-i", "--instance ID", "Only show a specific instance ID") do |a|
+    @options[:instance] = a
+  end
+  opts.on("-h", "--help", "This help screen") do
+    print opts
+    exit
+  end
 end 
 
 begin
-	opts.parse!
+  opts.parse!
 rescue OptionParser::InvalidOption, OptionParser::MissingArgument 
-	puts $!.to_s
-	puts ""
-	puts opts
-	exit 1
+  puts $!.to_s
+  puts ""
+  puts opts
+  exit 1
 end
 
 if ENV['MCC_SERVER'].nil?
-	puts "MCC_SERVER environment variable is not defined."
-	exit 1
+  puts "MCC_SERVER environment variable is not defined."
+  exit 1
 end
 
 
@@ -49,21 +49,21 @@ mcc = MCC::Client.new(ENV['MCC_SERVER'])
 
 
 if @options[:instance]
-	instances = mcc.get_instances(:instance => @options[:instance])
+  instances = mcc.get_instances(:instance => @options[:instance])
 elsif @options[:all]
-	instances = mcc.get_instances(:all => true)
+  instances = mcc.get_instances(:all => true)
 else
-	instances = mcc.get_instances
+  instances = mcc.get_instances
 end
 
 # Print out a heading and the instances
 puts "\t\tID\tIP\t\tSTATUS\t\tTEMPLATE\t\t\tNAME"
 instances.each do |inst|
-	# Fix the formatting for stopped instances
-	if inst['ip'].eql?('-')
-		puts "INSTANCE\t" + inst['id'] + "\t" + inst['ip'] + "\t\t" + inst['status'] + "\t\t" + inst['ostemplate'] + "\t\t" + inst['name']
-	else
-		puts "INSTANCE\t" + inst['id'] + "\t" + inst['ip'] + "\t" + inst['status'] + "\t\t" + inst['ostemplate'] + "\t\t" + inst['name']
-	end
+  # Fix the formatting for stopped instances
+  if inst['ip'].eql?('-')
+    puts "INSTANCE\t" + inst['id'] + "\t" + inst['ip'] + "\t\t" + inst['status'] + "\t\t" + inst['ostemplate'] + "\t\t" + inst['name']
+  else
+    puts "INSTANCE\t" + inst['id'] + "\t" + inst['ip'] + "\t" + inst['status'] + "\t\t" + inst['ostemplate'] + "\t\t" + inst['name']
+  end
 end
 

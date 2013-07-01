@@ -24,9 +24,7 @@ module MCC
     end
     
     def get_pub_key(keyname)
-      File.open(KS + keyname + ".pub", 'r') do |f|
-        return f.read
-      end
+      File.read(KS + keyname + ".pub")
     end
     
     def get_keys()

@@ -30,13 +30,9 @@ module MCC
     end
     
     def get_keys()
-      ret_arr = Array.new
-      Dir.foreach(KS) do |f|
-        if f.include?('.pub')
-          ret_arr.push(f.gsub('.pub', ''))
-        end
-      end
-      return ret_arr
+      Dir.foreach(KS).map do |f|
+        f.gsub('.pub', '') if f.include?('.pub')
+      end.compact
     end
     
     def exists?(keyname)

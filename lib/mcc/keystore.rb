@@ -20,7 +20,6 @@ module MCC
     end
     
     def del_key(keyname)
-      # Just delete it
       File.delete(KS + keyname + ".pub")
     end
     
@@ -32,7 +31,6 @@ module MCC
     
     def get_keys()
       ret_arr = Array.new
-      # Look in the dir
       Dir.foreach(KS) do |f|
         if f.include?('.pub')
           ret_arr.push(f.gsub('.pub', ''))

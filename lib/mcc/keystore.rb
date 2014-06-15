@@ -13,7 +13,7 @@ module MCC
     end
     
     def add_key(keyname, pub)
-      raise "Key " + keyname + " already exists" if File.file?(KS + keyname + ".pub")
+      raise "Key " + keyname + " already exists" if File.file?(@keystore_root + keyname + ".pub")
       f = File.open(@keystore_root + keyname + ".pub", 'w+', 0600)
       f.write(pub + "\n")
       f.close

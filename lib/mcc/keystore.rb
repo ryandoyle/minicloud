@@ -5,7 +5,7 @@ module MCC
     def initialize()
       @keystore_root = File.expand_path('~/.mcc/keys/') + '/'
       # Check if the .mcc/keys directory exists and create it
-      if ! File.directory?(@keystore_root)
+      unless File.directory?(@keystore_root)
         # Can't find a way to make the parent
         Dir.mkdir(File.expand_path('~/.mcc'), 0700)
         Dir.mkdir(@keystore_root, 0700)
@@ -34,7 +34,7 @@ module MCC
     end
     
     def exists?(keyname)
-      return File.file?(@keystore_root + keyname + ".pub")
+      File.file?(@keystore_root + keyname + ".pub")
     end
   
   end

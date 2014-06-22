@@ -52,7 +52,7 @@ module MCC
       @log.debug "get_images() Assuming full path: " + template_dir[1] + "/cache"
       templates = `ls #{template_dir[1]}/cache`
       # Process each line
-      templates.each do |tpl|
+      templates.each_line do |tpl|
         @log.debug "get_images() Found template: " + template_dir[1] + "/cache/" + tpl 
         # Push each template onto the ret array and kill off the tar.gz extension
         ret_arr.push(tpl.chomp!.gsub(/\.tar\.gz/, ''))

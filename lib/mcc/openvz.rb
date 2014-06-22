@@ -79,12 +79,12 @@ module MCC
     
     def run_instance(template, type = 'basic', pubkey = '', name = '')
       # Check if the template type exist first
-      if not get_instance_types.include?(type)
+      unless get_instance_types.include?(type)
         @log.err "run_instance() Instance type " + type + " not found"
         raise "Instance type " + type + " not found"
       end
       # Check if the image exists
-      if not get_images.include?(template)
+      unless get_images.include?(template)
         @log.err "run_instance() Image template " + template + " not found!"
         raise "Image template " + template + " not found!"
       end

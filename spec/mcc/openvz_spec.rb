@@ -16,6 +16,12 @@ describe MCC::OpenVZ do
     "101 1.1.1.1 running ubuntu instance1\n" +
     "103 1.1.1.3 running redhat instance3\n"
   }
+  let(:instance_types_stdout) {
+    "ve-basic.conf-sample\n" +
+    "ve-light.conf-sample\n" +
+    "ve-vswap-1024m.conf-sample\n" +
+    "ve-vswap-1g.conf-sample\n"
+  }
   let(:instance1) {{
         :id => '101',
         :ip => '1.1.1.1',
@@ -66,6 +72,13 @@ describe MCC::OpenVZ do
       expect(openvz).to receive(:'`').with('grep -e "^TEMPLATE" /etc/vz/vz.conf').and_return template_dir_stdout
       expect(openvz).to receive(:'`').with('ls  /images/cache').and_return template_dir_listing_stdout
       expect(openvz.get_images).to eql ["ubuntu", "centos"]
+    end
+  end
+
+  describe 'listing instance types' do
+    it 'returns a list of instance types' do
+      expect(openvz).to receive(:'`').with('ls /etc/vz/conf/ | grep -e "sample$"').and_return instance_types_stdout
+      expect(openvz.get_instance_types).to eql ["basic", "light", "vswap-1024m", "vswap-1g"]
     end
 
   end

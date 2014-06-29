@@ -136,10 +136,10 @@ module MCC
     end
     
     def destroy_instance(id)
-      @log.info "Destroying instance " + id
-      @log.debug "destroy_instance() Destroying CTID: " + id
+      @log.info "Destroying instance " + id.to_s
+      @log.debug "destroy_instance() Destroying CTID: " + id.to_s
       # Check instance exists
-      if ! get_instances('all' => true).detect {|f| f[:id].to_i == id.to_i }
+      if get_instances('all' => true).none? {|f| f[:id].to_i == id.to_i }
         @log.debug "destroy_instance() CTID #{id} not found"
         raise "Instance ID not found"
       end

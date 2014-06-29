@@ -1,14 +1,9 @@
 #!/usr/bin/env ruby
-require 'optparse'
-require File.expand_path(
-  File.join(
-    File.dirname(File.expand_path(
-      File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
-    )),
-    '../lib/mcc'
-  )
-)
+$:.unshift File.expand_path('../../lib/', __FILE__)
 
+require 'optparse'
+
+require 'mcc/keystore'
 
 @options = Hash.new
 

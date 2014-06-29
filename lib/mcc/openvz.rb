@@ -1,10 +1,12 @@
 require 'ipaddr'
 require 'logger'
 require 'thread'
+
+
 module MCC
     class OpenVZ
   
-    def initialize(iprange, log = STDOUT)
+    def initialize(iprange, images, log = STDOUT)
       # Split the IP range
       ip = iprange.split('-')
       @ip_start = ip[0]
@@ -12,6 +14,7 @@ module MCC
       # Logging, default to STDOUT, otherwise log file
       @log = Logger.new(log)
       @log.level = Logger::DEBUG
+      @images = images
       
     end
     
@@ -42,22 +45,7 @@ module MCC
     end
     
     def get_images()
-      ret_arr = Array.new
-      @log.info("Getting list of images")
-      @log.debug "get_images() called. Looking in /etc/vz/vz.conf for TEMPLATE param"
-      # Find out where the templates are stored
-      template_conf = `grep -e "^TEMPLATE" /etc/vz/vz.conf`
-      template_dir = template_conf.chomp!.split("=")
-      @log.debug "get_images() Found template directory: " + template_dir[1] 
-      @log.debug "get_images() Assuming full path: " + template_dir[1] + "/cache"
-      templates = `ls #{template_dir[1]}/cache`
-      # Process each line
-      templates.each_line do |tpl|
-        @log.debug "get_images() Found template: " + template_dir[1] + "/cache/" + tpl 
-        # Push each template onto the ret array and kill off the tar.gz extension
-        ret_arr.push(tpl.chomp!.gsub(/\.tar\.gz/, ''))
-      end
-      return ret_arr
+      @images.all
     end
     
     def get_instance_types()
@@ -84,7 +72,7 @@ module MCC
         raise "Instance type " + type + " not found"
       end
       # Check if the image exists
-      unless get_images.include?(template)
+      unless @images.include?(template)
         @log.err "run_instance() Image template " + template + " not found!"
         raise "Image template " + template + " not found!"
       end

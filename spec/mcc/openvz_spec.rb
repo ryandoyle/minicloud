@@ -3,9 +3,8 @@ require 'mcc/openvz'
 
 describe MCC::OpenVZ do
 
-  let(:openvz) { MCC::OpenVZ.new("1.1.1.1-1.1.1.20") }
-  let(:template_dir_stdout) { "TEMPLATE = /images\n" }
-  let(:template_dir_listing_stdout) { "ubuntu.tar.gz\ncentos.tar.gz\n" }
+  let(:images) { double("Images") }
+  let(:openvz) { MCC::OpenVZ.new("1.1.1.1-1.1.1.20", images) }
   let(:single_instance_stdout) { "101 1.1.1.1 running ubuntu instance1\n" }
   let(:all_instances_stdout) {
     "101 1.1.1.1 running ubuntu instance1\n" +
@@ -48,7 +47,6 @@ describe MCC::OpenVZ do
     expect(openvz).to receive(:'`').with(command)
   end
 
-
   describe 'listing instances' do
     it 'should return the instance the user requested' do
       expect_shell_command("vzlist -H -o ctid,ip,status,ostemplate,name instance1").and_return single_instance_stdout
@@ -66,8 +64,7 @@ describe MCC::OpenVZ do
 
   describe 'listing images' do
     it 'returns a list all of images' do
-      expect_shell_command('grep -e "^TEMPLATE" /etc/vz/vz.conf').and_return template_dir_stdout
-      expect_shell_command('ls  /images/cache').and_return template_dir_listing_stdout
+      allow(images).to receive(:all).and_return ["ubuntu", "centos"]
       expect(openvz.get_images).to eql ["ubuntu", "centos"]
     end
   end
@@ -93,6 +90,7 @@ describe MCC::OpenVZ do
       allow(openvz).to receive(:get_images).and_return ['ubuntu']
       allow(openvz).to receive(:find_ip).and_return '1.2.3.4'
       allow(openvz).to receive(:find_ctid).and_return 191
+      allow(images).to receive(:include?).and_return true
 
       # Calls inside Thread.new
       expect_shell_command "vzctl create 191 --ostemplate ubuntu --config basic --ipadd 1.2.3.4 --hostname mcc-id-191.localdomain --name \"\""

@@ -5,16 +5,6 @@ describe MCC::OpenVZ do
 
   let(:images) { double("Images") }
   let(:openvz) { MCC::OpenVZ.new("1.1.1.1-1.1.1.20", images) }
-  let(:single_instance_stdout) { "101 1.1.1.1 running ubuntu instance1\n" }
-  let(:all_instances_stdout) {
-    "101 1.1.1.1 running ubuntu instance1\n" +
-    "102 1.1.1.2 stopped centos instance2\n" +
-    "103 1.1.1.3 running redhat instance3\n"
-  }
-  let(:running_instances_stdout) {
-    "101 1.1.1.1 running ubuntu instance1\n" +
-    "103 1.1.1.3 running redhat instance3\n"
-  }
   let(:instance_types_stdout) {
     "ve-basic.conf-sample\n" +
     "ve-light.conf-sample\n" +
@@ -78,7 +68,7 @@ describe MCC::OpenVZ do
       expect(openvz.get_instances( 'all' => true)).to eql [ instance1, instance2  ]
     end
     it 'should return all running instances by default' do
-      allow(instances_double).to receive(:running).and_return [ instance1 ]
+      allow(instances_double).to receive(:running).and_return [ instances_double1 ]
       expect(openvz.get_instances).to eql [ instance1 ]
     end
   end

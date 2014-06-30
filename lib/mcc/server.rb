@@ -1,6 +1,7 @@
 require 'xmlrpc/server'
 
 require 'mcc/images'
+require 'mcc/openvz'
 
 module MCC
   class Server

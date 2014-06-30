@@ -1,13 +1,9 @@
 #!/usr/bin/env ruby
+$:.unshift File.expand_path('../../lib/', __FILE__)
+
 require 'optparse'
-require File.expand_path(
-  File.join(
-    File.dirname(File.expand_path(
-      File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
-    )),
-    '../lib/mcc'
-  )
-)
+
+require 'mcc/server'
 
 # Set the defaults
 @options = {:port => 8080, :listen => '0.0.0.0', :iprange => '192.168.1.1-192.168.1.254', :daemon => true}

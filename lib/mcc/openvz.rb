@@ -8,7 +8,7 @@ require 'mcc/instances'
 module MCC
     class OpenVZ
   
-    def initialize(iprange, images, log = STDOUT)
+    def initialize(iprange, images, instance_types, log = STDOUT)
       # Split the IP range
       ip = iprange.split('-')
       @ip_start = ip[0]
@@ -17,6 +17,7 @@ module MCC
       @log = Logger.new(log)
       @log.level = Logger::DEBUG
       @images = images
+      @instance_types = instance_types
       
     end
 
@@ -43,24 +44,12 @@ module MCC
     
     def get_instance_types()
       @log.info "Getting list of instance types"
-      ret_arr = Array.new
-      @log.debug "get_instance_types() Looking in /etc/vz/conf/"
-      types = `ls /etc/vz/conf/ | grep -e "sample$"`
-      types.each_line do |type|
-        @log.debug "get_instance_types() Found " + type.chomp!
-        begin
-          #ret_arr.push(type)
-          ret_arr.push(type.gsub(/\.conf-sample$/, '').gsub(/^ve-/, ''))
-        rescue 
-          @log.debug "get_instance_types() Exception raised when pushing to the array. Skipping."
-        end
-      end
-      return ret_arr
+      @instance_types.all
     end
     
     def run_instance(template, type = 'basic', pubkey = '', name = '')
       # Check if the template type exist first
-      unless get_instance_types.include?(type)
+      unless @instance_types.include?(type)
         @log.err "run_instance() Instance type " + type + " not found"
         raise "Instance type " + type + " not found"
       end

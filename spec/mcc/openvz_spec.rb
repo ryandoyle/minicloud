@@ -4,13 +4,8 @@ require 'mcc/openvz'
 describe MCC::OpenVZ do
 
   let(:images) { double("Images") }
-  let(:openvz) { MCC::OpenVZ.new("1.1.1.1-1.1.1.20", images) }
-  let(:instance_types_stdout) {
-    "ve-basic.conf-sample\n" +
-    "ve-light.conf-sample\n" +
-    "ve-vswap-1024m.conf-sample\n" +
-    "ve-vswap-1g.conf-sample\n"
-  }
+  let(:instance_types) { double("InstanceTypes") }
+  let(:openvz) { MCC::OpenVZ.new("1.1.1.1-1.1.1.20", images, instance_types) }
   let(:instance1) {{
         :id => '101',
         :ip => '1.1.1.1',
@@ -60,9 +55,9 @@ describe MCC::OpenVZ do
   end
 
   describe 'listing instance types' do
-    it 'returns a list of instance types' do
-      expect_shell_command('ls /etc/vz/conf/ | grep -e "sample$"').and_return instance_types_stdout
-      expect(openvz.get_instance_types).to eql ["basic", "light", "vswap-1024m", "vswap-1g"]
+    it 'delegates to the injected instance types object' do
+      allow(instance_types).to receive(:all).and_return [ "basic", "light"]
+      expect(openvz.get_instance_types).to eql ["basic", "light"]
     end
   end
 
@@ -76,7 +71,7 @@ describe MCC::OpenVZ do
     # TODO: Add more tests around IP/CTID collision detection
 
     it 'should return the container ID and IP address of what will be created' do
-      allow(openvz).to receive(:get_instance_types).and_return ['basic']
+      allow(instance_types).to receive(:include?).and_return true
       allow(openvz).to receive(:get_images).and_return ['ubuntu']
       allow(openvz).to receive(:find_ip).and_return '1.2.3.4'
       allow(openvz).to receive(:find_ctid).and_return 191

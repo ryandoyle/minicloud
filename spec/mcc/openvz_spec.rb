@@ -27,22 +27,8 @@ describe MCC::OpenVZ do
   }}
 
   let(:instances_double) { [instances_double1, instances_double2] }
-  let(:instances_double1) { double("instance1", :container_id => '101', :to_h => {
-      :id=>"101",
-      :ip=>"1.1.1.1",
-      :status=>"running",
-      :ostemplate=>"ubuntu",
-      :name=>"instance1"
-    })
-  }
-  let(:instances_double2) { double("instance2", :container_id => '102', :to_h => {
-      :id => '102',
-      :ip => '1.1.1.2',
-      :status => "stopped",
-      :ostemplate => "centos",
-      :name => "instance2"
-    })
-  }
+  let(:instances_double1) { double("instance1", :container_id => '101', :to_h => instance1 ) }
+  let(:instances_double2) { double("instance2", :container_id => '102', :to_h => instance2 ) }
 
 
   def expect_shell_command(command)

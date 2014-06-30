@@ -2,6 +2,8 @@ require 'ipaddr'
 require 'logger'
 require 'thread'
 
+require 'mcc/instances'
+
 
 module MCC
     class OpenVZ
@@ -17,31 +19,22 @@ module MCC
       @images = images
       
     end
-    
-    # Get an array of OpenVZ instances
+
     def get_instances(params = {})
       @log.debug "get_instances() called"
-      ret_arr = Array.new
+
       if params['instance']
         @log.debug "get_instances() Specific instance #{params['instance']} requested."
-        res = `vzlist -H -o ctid,ip,status,ostemplate,name #{params['instance']}`
+        instances = MCC::Instances.new.select {|instance| instance.container_id == params['instance'] }
       elsif params['all']
         @log.debug "get_instances() All running _and_ stopped instances requested"
-        res = `vzlist -a -H -o ctid,ip,status,ostemplate,name`
+        instances = MCC::Instances.new.all
       else
         @log.debug "get_instances() All running instances requested"
-        res = `vzlist -H -o ctid,ip,status,ostemplate,name`
+        instances = MCC::Instances.new.running
       end
-      # Process each line of the output
-      res.each_line do |line|
-        line.chomp!
-        line.lstrip!
-        e = line.split(' ')
-        # Push each instance on the array we'll return
-        @log.debug "get_instances() Found instance ctid:" + e[0] + " ip:" + e[1] + " status:" + e[2] + " ostemplate:" + e[3] + " name:" + e[4]
-        ret_arr.push({:id => e[0], :ip => e[1], :status => e[2],:ostemplate => e[3],:name => e[4]})
-      end
-      return ret_arr
+
+      instances.collect { |instance| instance.to_h }
     end
     
     def get_images()

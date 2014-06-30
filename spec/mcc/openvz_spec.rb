@@ -43,22 +43,43 @@ describe MCC::OpenVZ do
       :name => "instance3"
   }}
 
+  let(:instances_double) { [instances_double1, instances_double2] }
+  let(:instances_double1) { double("instance1", :container_id => '101', :to_h => {
+      :id=>"101",
+      :ip=>"1.1.1.1",
+      :status=>"running",
+      :ostemplate=>"ubuntu",
+      :name=>"instance1"
+    })
+  }
+  let(:instances_double2) { double("instance2", :container_id => '102', :to_h => {
+      :id => '102',
+      :ip => '1.1.1.2',
+      :status => "stopped",
+      :ostemplate => "centos",
+      :name => "instance2"
+    })
+  }
+
+
   def expect_shell_command(command)
     expect(openvz).to receive(:'`').with(command)
   end
 
   describe 'listing instances' do
+    before do
+      allow(MCC::Instances).to receive(:new).and_return instances_double
+      allow(instances_double).to receive(:all).and_return instances_double
+    end
     it 'should return the instance the user requested' do
-      expect_shell_command("vzlist -H -o ctid,ip,status,ostemplate,name instance1").and_return single_instance_stdout
-      expect(openvz.get_instances({'instance' => "instance1"})).to eql [ instance1 ]
+      expect(openvz.get_instances({'instance' => "101"})).to eql [ instance1 ]
     end
     it 'should return all running and stopped instances when all are requested' do
-      expect_shell_command("vzlist -a -H -o ctid,ip,status,ostemplate,name").and_return all_instances_stdout
-      expect(openvz.get_instances( 'all' => true)).to eql [ instance1, instance2, instance3 ]
+      expect(openvz.get_instances( 'all' => true)).to eql [ instance1, instance2  ]
     end
     it 'should return all running instances by default' do
-      expect_shell_command("vzlist -H -o ctid,ip,status,ostemplate,name").and_return running_instances_stdout
-      expect(openvz.get_instances).to eql [ instance1, instance3 ]
+      allow(instances_double).to receive(:running).and_return [ instance1 ]
+      expect(openvz.get_instances).to eql [ instance1 ]
     end
   end
 

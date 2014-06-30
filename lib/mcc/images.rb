@@ -4,7 +4,7 @@ module MCC
     include Enumerable
 
     def all
-      template_directory = `grep -e "^TEMPLATE" /etc/vz/vz.conf`.split("=")[1]
+      template_directory = `grep -e "^TEMPLATE" /etc/vz/vz.conf`.split("=")[1].strip
       `ls #{template_directory}/cache`.each_line.collect do |template|
         template.chomp.gsub(/\.tar\.gz/, '')
       end

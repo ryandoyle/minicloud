@@ -25,13 +25,6 @@ describe MCC::OpenVZ do
       :ostemplate => "centos",
       :name => "instance2"
   }}
-  let(:instance3) {{
-      :id => '103',
-      :ip => '1.1.1.3',
-      :status => "running",
-      :ostemplate => "redhat",
-      :name => "instance3"
-  }}
 
   let(:instances_double) { [instances_double1, instances_double2] }
   let(:instances_double1) { double("instance1", :container_id => '101', :to_h => {

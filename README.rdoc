@@ -21,7 +21,7 @@ Clone the MiniCloud repo to install.
   $ git clone https://github.com/ryandoyle/minicloud.git
 	
 Run the MiniClould server, specifying a range of IP addresses that it can hand out
-  $ /opt/minicloud/sbin/mccserver -r 10.0.0.100-10.0.0.200
+  $ /opt/minicloud/sbin/mcserver -r 10.0.0.100-10.0.0.200
 	
 Check the log files
   $ tail -f /opt/minicloud/log/mcc-server.log
